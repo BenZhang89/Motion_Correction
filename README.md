@@ -1,2 +1,2 @@
 # Motion_Correction
-A Deeep Learning model to correction motion artifacts on MPRAGE
+A Deep Learning model to correction motion artifacts on MPRAGE
