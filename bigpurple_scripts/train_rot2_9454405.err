@@ -1,0 +1,16 @@
+/gpfs/home/bz957/.bash_profile: line 27: /gpfs/data/luilab/BRATS/fsl/etc/fslconf/fsl.sh: No such file or directory
+INFO: Using device cuda
+INFO: Network:
+	3 input channels
+	1 output channels (classes)
+	Bilinear upscaling
+/gpfs/scratch/bz957/Motion_Correction/Pytorch-UNet-master/utils/dataset.py:33: FutureWarning: Using a non-tuple sequence for multidimensional indexing is deprecated; use `arr[tuple(seq)]` instead of `arr[seq]`. In the future this will be interpreted as an array index, `arr[np.array(seq)]`, which will result either in an error or a different result.
+  result[insertHere] = array
+Traceback (most recent call last):
+  File "train.py", line 188, in <module>
+    val_percent=args.val / 100)
+  File "train.py", line 30, in train_net
+    dataset = BasicDataset(dir_img, dir_truth, img_scale)
+  File "/gpfs/scratch/bz957/Motion_Correction/Pytorch-UNet-master/utils/dataset.py", line 17, in __init__
+    logging.info(f'Creating dataset with {len(self.ids)} examples')
+AttributeError: 'BasicDataset' object has no attribute 'ids'

@@ -1,0 +1,40 @@
+/gpfs/home/bz957/.bash_profile: line 27: /gpfs/data/luilab/BRATS/fsl/etc/fslconf/fsl.sh: No such file or directory
+INFO: Using device cuda
+INFO: Network:
+	3 input channels
+	1 output channels (classes)
+	Bilinear upscaling
+/gpfs/scratch/bz957/Motion_Correction/Pytorch-UNet-master/utils/dataset.py:35: FutureWarning: Using a non-tuple sequence for multidimensional indexing is deprecated; use `arr[tuple(seq)]` instead of `arr[seq]`. In the future this will be interpreted as an array index, `arr[np.array(seq)]`, which will result either in an error or a different result.
+  result[insertHere] = array
+INFO: Creating dataset with 2 examples
+INFO: Starting training:
+        Epochs:          1
+        Batch size:      5
+        Learning rate:   0.0001
+        Training size:   9
+        Validation size: 1
+        Checkpoints:     True
+        Device:          cuda
+        Images scaling:  0.5
+    
+Epoch 1/1:   0%|          | 0/9 [00:00<?, ?img/s]Epoch 1/1:   0%|          | 0/9 [00:00<?, ?img/s]
+Traceback (most recent call last):
+  File "train.py", line 188, in <module>
+    val_percent=args.val / 100)
+  File "train.py", line 64, in train_net
+    for batch in train_loader:
+  File "/gpfs/scratch/bz957/pytorch1.2/lib/python3.6/site-packages/torch/utils/data/dataloader.py", line 582, in __next__
+    return self._process_next_batch(batch)
+  File "/gpfs/scratch/bz957/pytorch1.2/lib/python3.6/site-packages/torch/utils/data/dataloader.py", line 608, in _process_next_batch
+    raise batch.exc_type(batch.exc_msg)
+IndexError: Traceback (most recent call last):
+  File "/gpfs/scratch/bz957/pytorch1.2/lib/python3.6/site-packages/torch/utils/data/_utils/worker.py", line 99, in _worker_loop
+    samples = collate_fn([dataset[i] for i in batch_indices])
+  File "/gpfs/scratch/bz957/pytorch1.2/lib/python3.6/site-packages/torch/utils/data/_utils/worker.py", line 99, in <listcomp>
+    samples = collate_fn([dataset[i] for i in batch_indices])
+  File "/gpfs/scratch/bz957/pytorch1.2/lib/python3.6/site-packages/torch/utils/data/dataset.py", line 207, in __getitem__
+    return self.dataset[self.indices[idx]]
+  File "/gpfs/scratch/bz957/Motion_Correction/Pytorch-UNet-master/utils/dataset.py", line 82, in __getitem__
+    idx = self.ids[i]
+IndexError: list index out of range
+

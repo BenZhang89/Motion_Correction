@@ -1,0 +1,10 @@
+/gpfs/home/bz957/.bash_profile: line 27: /gpfs/data/luilab/BRATS/fsl/etc/fslconf/fsl.sh: No such file or directory
+INFO: Using device cuda
+INFO: Network:
+	3 input channels
+	1 output channels (classes)
+	Bilinear upscaling
+Traceback (most recent call last):
+  File "train.py", line 181, in <module>
+    dir_img=args.input_dir, 
+AttributeError: 'Namespace' object has no attribute 'input_dir'

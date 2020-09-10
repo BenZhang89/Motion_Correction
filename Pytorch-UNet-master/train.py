@@ -33,7 +33,7 @@ def train_net(net,
     train, val = random_split(dataset, [n_train, n_val])
     train_loader = DataLoader(train, batch_size=batch_size, shuffle=True, num_workers=8, pin_memory=True)
     val_loader = DataLoader(val, batch_size=batch_size, shuffle=False, num_workers=8, pin_memory=True, drop_last=True)
-
+    
     writer = SummaryWriter(comment=f'LR_{lr}_BS_{batch_size}_SCALE_{img_scale}')
     global_step = 0
 
@@ -124,9 +124,9 @@ def train_net(net,
 def get_args():
     parser = argparse.ArgumentParser(description='Train the UNet on images and target masks',
                                      formatter_class=argparse.ArgumentDefaultsHelpFormatter)
-    parser.add_argument('-i', '--input_dir', dest='input_images', type=str, default=None,
+    parser.add_argument('-i', '--input_dir', dest='input_dir', type=str, default=None,
                         help='input directory of trainning images')
-    parser.add_argument('-t', '--truth_dir', dest='ground_images', type=str, default=None,
+    parser.add_argument('-t', '--truth_dir', dest='truth_dir', type=str, default=None,
                         help='ground truth directory')
     parser.add_argument('-c', '--checkpoints', dest='checkpoints', type=str, default='checkpoints/',
                         help='directory of checking points')
@@ -150,6 +150,7 @@ def get_args():
 if __name__ == '__main__':
     logging.basicConfig(level=logging.INFO, format='%(levelname)s: %(message)s')
     args = get_args()
+    print(args)
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     logging.info(f'Using device {device}')
 

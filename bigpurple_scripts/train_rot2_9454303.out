@@ -1,0 +1,3 @@
+Namespace(batchsize=5, checkpoints='checkpoints/', epochs=1, input_dir='/gpfs/scratch/bz957/Motion_Correction/dataset/ds000101and2', load=False, lr=0.0001, scale=0.5, truth_dir='/gpfs/scratch/bz957/Motion_Correction/dataset/rotation2', val=10.0)
+loading image file /gpfs/scratch/bz957/Motion_Correction/dataset/ds000101and2/ds000101/sub-03/sub-03_T1w.nii.gz
+loading truth file /gpfs/scratch/bz957/Motion_Correction/dataset/rotation2/ds000101/sub-03/sub-03_T1w_motion.nii.gz
