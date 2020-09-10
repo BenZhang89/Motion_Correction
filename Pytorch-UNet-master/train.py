@@ -16,21 +16,18 @@ from torch.utils.tensorboard import SummaryWriter
 from utils.dataset import BasicDataset
 from torch.utils.data import DataLoader, random_split
 
-dir_img = 'data/imgs/'
-dir_mask = 'data/masks/'
-dir_checkpoint = 'checkpoints/'
-
-
 def train_net(net,
+              dir_img, 
+              dir_truth,
               device,
               epochs=5,
-              batch_size=1,
+              batch_size=5,
               lr=0.001,
               val_percent=0.1,
               save_cp=True,
               img_scale=0.5):
 
-    dataset = BasicDataset(dir_img, dir_mask, img_scale)
+    dataset = BasicDataset(dir_img, dir_truth, img_scale)
     n_val = int(len(dataset) * val_percent)
     n_train = len(dataset) - n_val
     train, val = random_split(dataset, [n_train, n_val])
@@ -53,10 +50,11 @@ def train_net(net,
 
     optimizer = optim.RMSprop(net.parameters(), lr=lr, weight_decay=1e-8, momentum=0.9)
     scheduler = optim.lr_scheduler.ReduceLROnPlateau(optimizer, 'min' if net.n_classes > 1 else 'max', patience=2)
-    if net.n_classes > 1:
-        criterion = nn.CrossEntropyLoss()
-    else:
-        criterion = nn.BCEWithLogitsLoss()
+    # if net.n_classes > 1:
+    #     criterion = nn.CrossEntropyLoss()
+    # else:
+    #     criterion = nn.BCEWithLogitsLoss()
+    criterion = nn.MSELoss()
 
     for epoch in range(epochs):
         net.train()
@@ -126,6 +124,12 @@ def train_net(net,
 def get_args():
     parser = argparse.ArgumentParser(description='Train the UNet on images and target masks',
                                      formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+    parser.add_argument('-i', '--input_dir', dest='input_images', type=str, default=None,
+                        help='input directory of trainning images')
+    parser.add_argument('-t', '--truth_dir', dest='ground_images', type=str, default=None,
+                        help='ground truth directory')
+    parser.add_argument('-c', '--checkpoints', dest='checkpoints', type=str, default='checkpoints/',
+                        help='directory of checking points')
     parser.add_argument('-e', '--epochs', metavar='E', type=int, default=5,
                         help='Number of epochs', dest='epochs')
     parser.add_argument('-b', '--batch-size', metavar='B', type=int, nargs='?', default=1,
@@ -138,6 +142,7 @@ def get_args():
                         help='Downscaling factor of the images')
     parser.add_argument('-v', '--validation', dest='val', type=float, default=10.0,
                         help='Percent of the data that is used as validation (0-100)')
+
 
     return parser.parse_args()
 
@@ -172,6 +177,8 @@ if __name__ == '__main__':
 
     try:
         train_net(net=net,
+                  dir_img=args.input_dir, 
+                  dir_truth=args.truth_dir,
                   epochs=args.epochs,
                   batch_size=args.batchsize,
                   lr=args.lr,
