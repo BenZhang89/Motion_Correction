@@ -6,6 +6,7 @@ import torch
 from torch.utils.data import Dataset
 import logging
 import SimpleITK as sitk
+import os
 
 class BasicDataset(Dataset):
     def __init__(self, imgs_dir, truth_dir, scale=1):
@@ -55,13 +56,15 @@ class BasicDataset(Dataset):
 
     def load_dataset(self,imgs_dir, truth_dir, slice_ranges=[60,150]):
         input_imgs = glob(imgs_dir+'/*/*/*nii.gz')
-        truth_imgs = glob(truth_dir+'/*/*/*nii.gz')
         img_arrays = np.array([], dtype=np.int64).reshape(0,256,256)
         truth_arrays = np.array([], dtype=np.int64).reshape(0,256,256)
 
-        for i, file in enumerate(input_imgs[:5]):
+        for i, file in enumerate(input_imgs[:1]):
+            nifti_name = os.path.basename(file).replace('.nii.gz','')
+            truth_nifti = glob(truth_dir+'/*/*/'+nifti_name+'*')[0]
             print(f'loading image file {file}')
-            print(f'loading truth file {truth_imgs[i]}')
+            print(f'loading truth file {truth_nifti}')
+            assert os.path.exists(truth_nifti)
             image_3d = sitk.ReadImage(file)
             image_3d = sitk.GetArrayFromImage(image_3d)
             image_3d = np.transpose(image_3d, (2, 1, 0))
@@ -69,7 +72,7 @@ class BasicDataset(Dataset):
             image_3d_s = self.preprocess(image_3d_s)
             img_arrays = np.vstack([img_arrays,image_3d_s])
 
-            truth_3d = sitk.ReadImage(file)
+            truth_3d = sitk.ReadImage(truth_nifti)
             truth_3d = sitk.GetArrayFromImage(truth_3d)
             truth_3d = np.transpose(truth_3d, (2, 1, 0))
             truth_3d_s = truth_3d[slice_ranges[0]:slice_ranges[1]]
