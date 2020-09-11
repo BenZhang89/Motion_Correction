@@ -5,3 +5,4 @@ skynet_scripts
 bigpurple_scripts
 Pytorch-UNet-master/runs
 Pytorch-UNet-master/checkpoints
+Pytorch-UNet-master/utils/__pycache__
