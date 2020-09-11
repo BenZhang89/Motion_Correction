@@ -56,7 +56,6 @@ class BasicDataset(Dataset):
     def load_dataset(self,imgs_dir, truth_dir, slice_ranges=[60,150]):
         input_imgs = glob(imgs_dir+'/*/*/*nii.gz')
         truth_imgs = glob(truth_dir+'/*/*/*nii.gz')
-        depth = slice_ranges[1] - slice_ranges[0]
         img_arrays = np.array([], dtype=np.int64).reshape(0,256,256)
         truth_arrays = np.array([], dtype=np.int64).reshape(0,256,256)
 
@@ -65,15 +64,16 @@ class BasicDataset(Dataset):
             print(f'loading truth file {truth_imgs[i]}')
             image_3d = sitk.ReadImage(file)
             image_3d = sitk.GetArrayFromImage(image_3d)
-            image_3d_s = image_3d[slice_ranges]
+            image_3d = np.transpose(image_3d, (2, 1, 0))
+            image_3d_s = image_3d[slice_ranges[0]:slice_ranges[1]]
             image_3d_s = self.preprocess(image_3d_s)
-            print(f'first img_3d_s is {img_3d_s.shape}')
             img_arrays = np.vstack([img_arrays,image_3d_s])
-            print(f'first img_arrays is {img_arrays.shape}')
+
             truth_3d = sitk.ReadImage(file)
             truth_3d = sitk.GetArrayFromImage(truth_3d)
-            truth_3d_s = truth_3d[slice_ranges]
-            truth_3d_s = self.preprocess(truth_3d[slice_ranges])
+            truth_3d = np.transpose(truth_3d, (2, 1, 0))
+            truth_3d_s = truth_3d[slice_ranges[0]:slice_ranges[1]]
+            truth_3d_s = self.preprocess(truth_3d_s)
             truth_arrays = np.vstack([truth_arrays,truth_3d_s])
         print(f'img_arrays is {img_arrays.shape}')
         return img_arrays,truth_arrays
