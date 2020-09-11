@@ -59,7 +59,7 @@ class BasicDataset(Dataset):
         img_arrays = np.array([], dtype=np.int64).reshape(0,256,256)
         truth_arrays = np.array([], dtype=np.int64).reshape(0,256,256)
 
-        for i, file in enumerate(input_imgs[:1]):
+        for i, file in enumerate(input_imgs):
             nifti_name = os.path.basename(file).replace('.nii.gz','')
             truth_nifti = glob(truth_dir+'/*/*/'+nifti_name+'*')[0]
             print(f'loading image file {file}')
