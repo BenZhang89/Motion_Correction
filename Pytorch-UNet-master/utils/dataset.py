@@ -17,6 +17,7 @@ class BasicDataset(Dataset):
         logging.info(f'Creating dataset with {len(self.img_dataset)} examples')
 
     def __len__(self):
+        print(len(self.img_dataset))
         return len(self.img_dataset)
 
     def pad(self,array, reference, offsets):
@@ -66,19 +67,22 @@ class BasicDataset(Dataset):
             image_3d = sitk.GetArrayFromImage(image_3d)
             image_3d_s = image_3d[slice_ranges]
             image_3d_s = self.preprocess(image_3d_s)
+            print(f'first img_3d_s is {img_3d_s.shape}')
             img_arrays = np.vstack([img_arrays,image_3d_s])
-
+            print(f'first img_arrays is {img_arrays.shape}')
             truth_3d = sitk.ReadImage(file)
             truth_3d = sitk.GetArrayFromImage(truth_3d)
             truth_3d_s = truth_3d[slice_ranges]
             truth_3d_s = self.preprocess(truth_3d[slice_ranges])
             truth_arrays = np.vstack([truth_arrays,truth_3d_s])
-
+        print(f'img_arrays is {img_arrays.shape}')
         return img_arrays,truth_arrays
 
     def __getitem__(self, i):
-        img = self.img_dataset[i]  
+        img = self.img_dataset[i]
+        img = np.expand_dims(img, axis=0)  
         mask = self.truth_dataset[i]
+        mask = np.expand_dims(mask, axis=0)
         assert img.size == mask.size, \
             f'Image and mask {i} should be the same size, but are {img.size} and {mask.size}'
 
