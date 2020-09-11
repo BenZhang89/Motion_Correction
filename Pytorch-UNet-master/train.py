@@ -9,7 +9,7 @@ import torch.nn as nn
 from torch import optim
 from tqdm import tqdm
 
-from eval import eval_net
+from eval import eval_net,eval_net_mseloss
 from unet import UNet
 
 from torch.utils.tensorboard import SummaryWriter
@@ -19,6 +19,7 @@ from torch.utils.data import DataLoader, random_split
 def train_net(net,
               dir_img, 
               dir_truth,
+              dir_checkpoint,
               device,
               epochs=5,
               batch_size=5,
@@ -93,7 +94,8 @@ def train_net(net,
                         tag = tag.replace('.', '/')
                         writer.add_histogram('weights/' + tag, value.data.cpu().numpy(), global_step)
                         writer.add_histogram('grads/' + tag, value.grad.data.cpu().numpy(), global_step)
-                    val_score = eval_net(net, val_loader, device)
+                    # val_score = eval_net(net, val_loader, device)
+                    val_score = eval_net_mseloss(net, val_loader, device)
                     scheduler.step(val_score)
                     writer.add_scalar('learning_rate', optimizer.param_groups[0]['lr'], global_step)
 
@@ -101,8 +103,10 @@ def train_net(net,
                         logging.info('Validation cross entropy: {}'.format(val_score))
                         writer.add_scalar('Loss/test', val_score, global_step)
                     else:
-                        logging.info('Validation Dice Coeff: {}'.format(val_score))
-                        writer.add_scalar('Dice/test', val_score, global_step)
+                        # logging.info('Validation Dice Coeff: {}'.format(val_score))
+                        # writer.add_scalar('Dice/test', val_score, global_step)
+                        logging.info('MSELOSS: {}'.format(val_score))
+                        writer.add_scalar('MSELOSS/test', val_score, global_step)
 
                     writer.add_images('images', imgs, global_step)
                     if net.n_classes == 1:
@@ -181,6 +185,7 @@ if __name__ == '__main__':
         train_net(net=net,
                   dir_img=args.input_dir, 
                   dir_truth=args.truth_dir,
+                  dir_checkpoint=args.checkpoints,
                   epochs=args.epochs,
                   batch_size=args.batchsize,
                   lr=args.lr,
