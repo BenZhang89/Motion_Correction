@@ -55,11 +55,12 @@ class BasicDataset(Dataset):
         return img_3d
 
     def load_dataset(self,imgs_dir, truth_dir, slice_ranges=[60,150]):
-        input_imgs = glob(imgs_dir+'/*/*/*nii.gz')
+        input_imgs = glob(imgs_dir+'/*/*/*.nii.gz')
+        print(input_imgs)
         img_arrays = np.array([], dtype=np.int64).reshape(0,256,256)
         truth_arrays = np.array([], dtype=np.int64).reshape(0,256,256)
 
-        for i, file in enumerate(input_imgs[:1]):
+        for i, file in enumerate(input_imgs[:5]):
             nifti_name = os.path.basename(file).replace('.nii.gz','')
             truth_nifti = glob(truth_dir+'/*/*/'+nifti_name+'*')[0]
             print(f'loading image file {file}')

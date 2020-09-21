@@ -11,6 +11,7 @@ from tqdm import tqdm
 
 from eval import eval_net,eval_net_mseloss
 from unet import UNet
+from namer_cnn import namer_cnn
 
 from torch.utils.tensorboard import SummaryWriter
 from utils.dataset import BasicDataset
@@ -50,7 +51,8 @@ def train_net(net,
     ''')
 
     #optimizer = optim.RMSprop(net.parameters(), lr=lr, weight_decay=1e-8, momentum=0.9)
-    optimizer = optim.Adam(net.parameters(), lr=lr, weight_decay=1e-8)
+#    optimizer = optim.Adam(net.parameters(), lr=lr, weight_decay=1e-8)
+    optimizer = optim.Adam(net.parameters(), lr=lr, weight_decay=0.0)
     scheduler = optim.lr_scheduler.ReduceLROnPlateau(optimizer, 'min' if net.n_classes > 1 else 'max', patience=2)
     # if net.n_classes > 1:
     #     criterion = nn.CrossEntropyLoss()
@@ -95,7 +97,8 @@ def train_net(net,
                         writer.add_histogram('weights/' + tag, value.data.cpu().numpy(), global_step)
                         writer.add_histogram('grads/' + tag, value.grad.data.cpu().numpy(), global_step)
                     # val_score = eval_net(net, val_loader, device)
-                    val_score = eval_net_mseloss(net, val_loader, device)
+                    #val_score = eval_net_mseloss(net, val_loader, device)
+                    val_score = eval_net_accuracy(net, val_loader, device)
                     scheduler.step(val_score)
                     writer.add_scalar('learning_rate', optimizer.param_groups[0]['lr'], global_step)
 
@@ -166,7 +169,8 @@ if __name__ == '__main__':
     #   - For 1 class and background, use n_classes=1
     #   - For 2 classes, use n_classes=1
     #   - For N > 2 classes, use n_classes=N
-    net = UNet(n_channels=1, n_classes=1, bilinear=True)
+   # net = UNet(n_channels=1, n_classes=1, bilinear=True)
+    net = name_cnn(n_layers=27)
     logging.info(f'Network:\n'
                  f'\t{net.n_channels} input channels\n'
                  f'\t{net.n_classes} output channels (classes)\n'
